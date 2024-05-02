@@ -1,0 +1,82 @@
+alter FUNCTION proc_vendeur(IN vendId CHAR(3))
+RETURNS  LONG VARCHAR
+BEGIN
+    DECLARE htmlCode LONG VARCHAR;
+    CALL sa_set_http_header('Content-Type', 'text/html');
+    SELECT list ('<p><strong>' || vendId || '</strong> : ' || vendNom || ' ' || vendPrenom || ', ' || tbVilles.vilLib || '</p>')
+    FROM tbVendeurs
+    INNER JOIN tbVilles ON tbVendeurs.vilId = tbVilles.vilId
+    WHERE tbVendeurs.vendId = vendId;
+    return htmlCode;
+END;
+
+
+alter FUNCTION proc_objectifsVendeurs(IN cp INTEGER, IN mois date, IN objectifMin INTEGER)
+RETURNS LONG VARCHAR
+BEGIN
+    DECLARE objectifVente LONG VARCHAR;
+    SELECT list (tbVendeurs.vendId || vendNom || vendPrenom || moisId || objChiffre, ' ')
+    FROM tbObjectifs
+    JOIN tbVendeurs ON tbObjectifs.vendId = tbVendeurs.vendId
+    WHERE tbVendeurs.vilId = cp AND tbObjectifs.moisId = mois AND tbObjectifs.objChiffre >= objChiffre;
+    return objectifVente;
+END;
+
+
+
+TP9
+etape 1:
+creer un service en choisissant la bonne db et en nommant bien notre serveur
+-n nomServeur /// "C:\hemin\vers\fichier.db" ///
+-x tcpip
+-xs http(port=XX) ///
+
+etape 2:
+
+se connecter avec le bon login mot de passe
+- nom du serveur //
+- nom de la db //
+
+creer notre procédure 
+ALTER PROCEDURE "DBA"."sp_getActeurs"() /* [IN | OUT | INOUT] parameter_name parameter_type [DEFAULT default_value], ... */
+RESULT (id CHAR (4), identité CHAR (100))
+begin
+  SELECT actId as id, string( actPrenom, ' ', actNom) as identité
+FROM tbActeurs
+ORDER BY actNom
+end
+
+creer une service web qui renvoit ce qu'il faut (html, json...) qui appelera la bonne fonction... et on peut tester http://localhost:1978/getActeurs
+
+
+Could not execute statement.
+Le nombre de paramètres de la fonction 'abs' est incorrect
+SQLCODE=-154, ODBC 3 State="42000"
+Line 1, column 1
+
+create PROCEDURE sp_getFilms(idActeur CHAR (4))
+RESULT (htmlFilms LONG VARCHAR )
+begin
+  SELECT list('<li>' || filmTitre || '<li>', '' ORDER BY abs()filmTitre asc)
+FROM tbFilms
+JOIN tbRoles ON tbFilms.filmId = tbRoles.filmId
+WHERE actId = idActeur
+end;
+
+
+
+
+
+echo "# Dev-Web-I" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/Yanstart/Dev-Web-I.git
+git push -u origin main
+
+git remote add origin https://github.com/Yanstart/Dev-Web-I.git
+git branch -M main
+git push -u origin main
+
+import code
